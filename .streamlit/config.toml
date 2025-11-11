@@ -1,6 +1,15 @@
+# ======== DARK (active) ========
 [theme]
-base = "light"
-primaryColor = "#4a7cff"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f6f8fe"
-textColor = "#111111"
+backgroundColor = "#0a1220" # main canvas
+base = "dark"
+primaryColor = "#7aa2ff"
+secondaryBackgroundColor = "#1f2937" # sidebar
+textColor = "#e5e7eb"
+
+# ======== LIGHT (alternative) ========
+# [theme]
+# backgroundColor = "#ffffff" # main canvas
+# base = "light"
+# primaryColor = "#4a7cff"
+# secondaryBackgroundColor = "#f3f4f6" # sidebar (gray 100) - separa bem
+# textColor = "#111827" # gray 900

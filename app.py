@@ -1,30 +1,25 @@
 # app.py
 """
-Streamlit Chatbot — Step C (System Prompt + Clear Chat)
+Streamlit Chatbot — Step D (Polished UI)
 
 This app:
 - Keeps a minimal chat loop with st.session_state["messages"]
 - Stores an editable system prompt in st.session_state["system_prompt"]
 - Provides a "Clear chat" button in the sidebar
+- Uses a high-contrast Streamlit theme (no custom CSS)
+- Disables chat input when the API key is missing
 """
 
 
 import streamlit as st
 
-from src.config.settings import get_openai_api_key
+from src.config.settings import DEFAULT_MODEL, get_openai_api_key
 from src.services.openai_client import send_chat
 
 # ---------- Page setup ----------
 st.set_page_config(
     page_title="Customer Support Chatbot", page_icon="💬", layout="centered"
 )
-
-# Load custom CSS (optional, safe if file exists)
-try:
-    with open("styles/style.css", encoding="utf-8") as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-except FileNotFoundError:
-    pass
 
 # ---------- Session state ----------
 if "messages" not in st.session_state:
@@ -43,7 +38,9 @@ if "system_prompt" not in st.session_state:
 
 # ---------- Header ----------
 st.title("💬 Customer Support Chatbot")
-st.caption("Step C — customizable system prompt + clear chat")
+st.caption("Step D — polished UI (theme)")
+st.caption(f"Model: `{DEFAULT_MODEL}`")
+
 
 # ---------- API key guard ----------
 api_key = get_openai_api_key()
@@ -86,7 +83,8 @@ for msg in st.session_state["messages"]:
         st.markdown(msg["content"])
 
 # ---------- Input + response ----------
-user_input = st.chat_input("Type your message...")
+user_input = st.chat_input("Type your message...", disabled=not api_key)
+
 if user_input and api_key:
     # Append user message
     st.session_state["messages"].append({"role": "user", "content": user_input})
