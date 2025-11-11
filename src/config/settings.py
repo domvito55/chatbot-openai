@@ -14,6 +14,34 @@ try:
 except Exception:
     pass
 
+# Defaults (centralized). Can be overridden by Streamlit secrets or env vars.
+
+
+def _cfg(name: str, default: str) -> str:
+    """
+    Return config from Streamlit secrets (if present) or environment variable,
+    otherwise the provided default. Safe when no secrets.toml exists.
+    """
+    # 1) Try Streamlit secrets *for this key only*
+    try:
+        import streamlit as st  # lazy import; not required in tests/CLI
+
+        try:
+            val = st.secrets[name]  # raises if secrets file missing or key absent
+            return str(val)
+        except Exception:
+            pass
+    except Exception:
+        pass
+
+    # 2) Env var (e.g., set via .env + dotenv)
+    return os.getenv(name, default)
+
+
+DEFAULT_MODEL: str = _cfg("OPENAI_DEFAULT_MODEL", "gpt-4o-mini")
+DEFAULT_TEMPERATURE: float = float(_cfg("OPENAI_TEMPERATURE", "0.2"))
+DEFAULT_TIMEOUT_SECONDS: int = int(_cfg("OPENAI_TIMEOUT_SECONDS", "30"))
+
 
 def get_openai_api_key() -> str:
     """Return the OpenAI API key from st.secrets (Cloud) or environment (.env/local)."""

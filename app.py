@@ -1,10 +1,13 @@
 # app.py
 """
-Streamlit Chatbot (Base)
-- Maintains chat history in st.session_state
-- Renders chat bubbles
-- Calls OpenAI via src.services.openai_client.send_chat()
+Streamlit Chatbot — Step C (System Prompt + Clear Chat)
+
+This app:
+- Keeps a minimal chat loop with st.session_state["messages"]
+- Stores an editable system prompt in st.session_state["system_prompt"]
+- Provides a "Clear chat" button in the sidebar
 """
+
 
 import streamlit as st
 
@@ -23,22 +26,24 @@ try:
 except FileNotFoundError:
     pass
 
-
 # ---------- Session state ----------
 if "messages" not in st.session_state:
     # list of dicts: {"role": "user"|"assistant", "content": "text"}
     st.session_state["messages"]: list[dict[str, str]] = []
 
-# A default system prompt (move this to the sidebar)
+# A default system prompt
 DEFAULT_SYSTEM_PROMPT = (
     "You are a helpful, concise AI assistant for customer support. "
     "Use clear, friendly language and keep responses brief unless asked otherwise."
 )
 
+# Keep the system prompt in session (so edits persist between reruns)
+if "system_prompt" not in st.session_state:
+    st.session_state["system_prompt"] = DEFAULT_SYSTEM_PROMPT
 
 # ---------- Header ----------
 st.title("💬 Customer Support Chatbot")
-st.caption("Etapa B — base chat loop with session_state")
+st.caption("Step C — customizable system prompt + clear chat")
 
 # ---------- API key guard ----------
 api_key = get_openai_api_key()
@@ -49,12 +54,36 @@ if not api_key:
         " Streamlit Cloud → App → Settings → Secrets as `OPENAI_API_KEY`."
     )
 
+# ---------- Sidebar controls (Step C) ----------
+with st.sidebar:
+    st.subheader("Settings")
+
+    edited_prompt = st.text_area(
+        "System prompt",
+        value=st.session_state["system_prompt"],
+        help="High-level instructions for the assistant.",
+        height=140,
+    )
+
+    clear_clicked = st.button(
+        "Clear chat",
+        type="secondary",
+        help="Reset the current conversation.",
+    )
+
+# Persist prompt if user edited it
+if edited_prompt != st.session_state["system_prompt"]:
+    st.session_state["system_prompt"] = edited_prompt
+
+# Clear chat when requested
+if clear_clicked:
+    st.session_state["messages"].clear()
+    st.toast("Chat cleared.")
 
 # ---------- Render history ----------
 for msg in st.session_state["messages"]:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
-
 
 # ---------- Input + response ----------
 user_input = st.chat_input("Type your message...")
@@ -72,8 +101,9 @@ if user_input and api_key:
             try:
                 reply = send_chat(
                     messages=st.session_state["messages"],
-                    system_prompt=DEFAULT_SYSTEM_PROMPT,
+                    system_prompt=st.session_state["system_prompt"],
                 )
+
             except Exception as e:
                 reply = (
                     "Sorry, I couldn't process your request right now. "

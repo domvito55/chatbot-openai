@@ -7,15 +7,20 @@ OpenAI service wrapper.
 """
 from openai import OpenAI
 
-from src.config.settings import get_openai_api_key
+from src.config.settings import (
+    DEFAULT_MODEL,
+    DEFAULT_TEMPERATURE,
+    DEFAULT_TIMEOUT_SECONDS,
+    get_openai_api_key,
+)
 
 
 def send_chat(
     messages: list[dict[str, str]],
     system_prompt: str,
-    model: str = "gpt-4o-mini",
-    temperature: float = 0.2,
-    timeout: int = 30,
+    model: str = DEFAULT_MODEL,
+    temperature: float = DEFAULT_TEMPERATURE,
+    timeout: int = DEFAULT_TIMEOUT_SECONDS,
 ) -> str:
     """
     Build and send a chat completion request to OpenAI, returning assistant text.
