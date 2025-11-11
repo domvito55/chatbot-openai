@@ -1,0 +1,20 @@
+name: chatbot-openai
+channels:
+    - conda-forge
+    - defaults
+dependencies:
+    - python 3.12
+    - pip
+    - pip:
+          # Runtime
+          - openai==2.7.2
+          - streamlit==1.51
+          - python-dotenv==1.1.1
+          - pydantic
+
+          # Dev/Test/Quality
+          - pytest
+          - pytest-mock
+          - pre-commit
+          - ruff
+          - black

@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
 # Distribution / packaging
 build/
@@ -28,29 +29,23 @@ ENV/
 env.bak/
 venv.bak/
 
-# Conda environment folder if created inside the repo (it's recommended
-# manter apenas environment.yml no repositório em vez do ambiente em si)
+# Conda environment folder if created inside the repo
 conda-env/
 
-# Keep your environment file (environment.yml / environment.yaml) -
-# não ignore esses arquivos pois descrevem o ambiente reproducível.
 
-# Streamlit: evitar comitar segredos
-.streamlit/secrets.toml
-.streamlit/credentials.toml
-.streamlit/config.toml
-.streamlit/*.lock
+# Streamlit
+.streamlit/*
+!.streamlit/config.toml
 
-# dotenv (contém variáveis de ambiente / chaves)
+# dotenv
 .env
 .env.*
 
-# OpenAI / chaves ou arquivos de credenciais locais
-# (adicione nomes específicos se você usa arquivos customizados)
+# OpenAI
 openai_api_key
 *.key
 
-# IDEs / editores
+# IDEs / editors
 .idea/
 .vscode/
 *.iml
@@ -80,4 +75,3 @@ Thumbs.db
 __pypackages__/
 *.egg
 *.eggs
-

@@ -1,0 +1,23 @@
+# pyproject.toml — tooling only (no packaging)
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+# Basic rule sets: pycodestyle/pyflakes/warnings/imports/bugbear/pyupgrade
+select = ["E", "F", "W", "I", "B", "UP", "N"]
+ignore = []
+
+[tool.ruff.lint.isort]
+# Keep imports tidy and consistent
+known-first-party = ["src"]
+combine-as-imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
