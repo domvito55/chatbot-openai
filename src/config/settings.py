@@ -38,9 +38,12 @@ def _cfg(name: str, default: str) -> str:
     return os.getenv(name, default)
 
 
+# --------- DEFAULT VALUES -------------
 DEFAULT_MODEL: str = _cfg("OPENAI_DEFAULT_MODEL", "gpt-4o-mini")
 DEFAULT_TEMPERATURE: float = float(_cfg("OPENAI_TEMPERATURE", "0.2"))
 DEFAULT_TIMEOUT_SECONDS: int = int(_cfg("OPENAI_TIMEOUT_SECONDS", "30"))
+DEFAULT_MAX_RETRIES: int = int(_cfg("OPENAI_MAX_RETRIES", "2"))
+DEFAULT_MAX_HISTORY: int = int(_cfg("CHAT_MAX_HISTORY", "12"))
 
 
 def get_openai_api_key() -> str:

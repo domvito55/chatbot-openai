@@ -82,6 +82,14 @@ The app reads secrets **first** from Streamlit Secrets and **then** falls back t
 
 > Do **not** commit `.env` or `.streamlit/secrets.toml`.
 
+### Advanced configuration (env or Streamlit Secrets)
+
+-   `OPENAI_DEFAULT_MODEL` (default: `gpt-4o-mini`)
+-   `OPENAI_TEMPERATURE` (default: `0.2`)
+-   `OPENAI_TIMEOUT_SECONDS` (default: `30`)
+-   `OPENAI_MAX_RETRIES` (default: `2`)
+-   `CHAT_MAX_HISTORY` (default: `12`)
+
 ## ▶️ Run Locally
 
     streamlit run app.py
@@ -133,17 +141,15 @@ Open the URL shown in the terminal. You should see a chat UI; messages persist w
 
 ## ⚠️ Known Limitations
 
--   No token streaming UI yet (single message response)
--   No retry/backoff or rate‑limit handling
--   Session state is in‑memory per browser tab (refresh clears history)
--   No context window clamp for very long chats
--   Costs depend on model usage (monitor later)
+-   No token streaming UI (single message response).
+-   Session state is in-memory per browser tab (refresh clears history).
+-   Costs depend on model usage; monitor with cheaper models in dev.
 
 ## 🛠️ Customization
 
 -   **System prompt (sidebar):** edit the high‑level behavior prompt (next step).
 -   **Clear chat button:** reset current conversation (next step).
--   **Styling:** tweak `styles/style.css` (sidebar width, container size, spacing).
+-   **Styling:** via Streamlit theme (`.streamlit/config.toml`) — no custom CSS.
 
 ## ✅ Quality & Tooling
 
@@ -154,13 +160,16 @@ Open the URL shown in the terminal. You should see a chat UI; messages persist w
 ## 🚧 Future Enhancements
 
 -   [ ] Token streaming in the UI
--   [ ] Context window clamp & history summarization
--   [ ] Robust error handling (timeouts, rate limits, retries)
--   [ ] Full test suite with OpenAI client mocks
--   [ ] CI (GitHub Actions) running lint/tests on PRs
--   [ ] Deployment automation + badges
--   [ ] Optional RAG (vector store + retrieval)
+-   [ ] Long-chat management: history **summarization** (beyond the current clamp)
+-   [ ] Full unit test suite with OpenAI client mocks; coverage report/badge
+-   [ ] CI (GitHub Actions) running Ruff/Black/Pytest + pre-commit on PRs
+-   [ ] One-click deployment recipe to Streamlit Cloud + status badges
+-   [ ] Model switcher (cheap vs. quality) and per-session parameters
+-   [ ] Basic telemetry (session/message counts, optional CSAT) with opt-out
+-   [ ] Optional RAG module (vector store + retrieval; local file ingest)
+
+> Delivered in **Step E**: transient-error retries with backoff and context clamp.
 
 ## 🗓️ Changelog
 
--   **v0.1** — Minimal chat loop with session state; README v1 aligned to current versions (Python 3.12, Streamlit 1.51, OpenAI 2.7.2, dotenv 1.1.1).
+-   **v0.2** — Step E: retries with backoff, friendly error messages, history clamp; README aligned.

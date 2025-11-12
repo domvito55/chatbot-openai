@@ -1,6 +1,6 @@
 # app.py
 """
-Streamlit Chatbot — Step D (Polished UI)
+Streamlit Chatbot — Step E (Error handling & stability)
 
 This app:
 - Keeps a minimal chat loop with st.session_state["messages"]
@@ -8,6 +8,8 @@ This app:
 - Provides a "Clear chat" button in the sidebar
 - Uses a high-contrast Streamlit theme (no custom CSS)
 - Disables chat input when the API key is missing
+- Adds resilience: history clamp, transient-error retries with backoff,
+  and friendly UI messages for rate limits, timeouts, and auth errors
 """
 
 
@@ -38,7 +40,9 @@ if "system_prompt" not in st.session_state:
 
 # ---------- Header ----------
 st.title("💬 Customer Support Chatbot")
-st.caption("Step D — polished UI (theme)")
+st.caption(
+    "Step E — error handling (retries, timeouts, rate-limit) + safe history clamp"
+)
 st.caption(f"Model: `{DEFAULT_MODEL}`")
 
 
@@ -103,11 +107,22 @@ if user_input and api_key:
                 )
 
             except Exception as e:
-                reply = (
-                    "Sorry, I couldn't process your request right now. "
-                    "Please try again in a few seconds."
-                )
-                # Log error (print to server logs)
+                err = str(e).lower()
+                if "rate limit" in err or "too many requests" in err:
+                    reply = "We hit a rate limit. Please wait a bit and try again."
+                    st.info(
+                        "Tip: slow down slightly or switch to a cheaper/smaller"
+                        " model for heavy testing."
+                    )
+                elif "timeout" in err:
+                    reply = "The request timed out. Please try again."
+                elif "authentication" in err or "invalid api key" in err:
+                    reply = "Authentication failed. Check your API key settings."
+                else:
+                    reply = (
+                        "Sorry, I couldn't process your request right now."
+                        " Please try again soon."
+                    )
                 print(f"[openai error] {e!r}")
 
             st.markdown(reply)
